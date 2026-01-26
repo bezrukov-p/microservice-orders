@@ -1,10 +1,7 @@
 package com.bezrukov.microserviceorders.entity;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +13,9 @@ import java.util.UUID;
 @Setter
 @ToString(exclude = {"orders"})
 @EqualsAndHashCode(of = {"id"})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

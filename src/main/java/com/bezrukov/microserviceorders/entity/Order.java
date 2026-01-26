@@ -1,10 +1,7 @@
 package com.bezrukov.microserviceorders.entity;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,6 +12,9 @@ import java.util.UUID;
 @Setter
 @ToString(exclude = "user")
 @EqualsAndHashCode(of = {"id"})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
     @Id
     private UUID id;
