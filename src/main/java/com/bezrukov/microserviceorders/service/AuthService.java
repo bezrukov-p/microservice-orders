@@ -52,16 +52,17 @@ public class AuthService {
         return generateAuthResponse(user);
     }
 
-    public UserProfileResponse getCurrentUser() {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
 
         String username = authentication.getName();
-        String role = authentication.getAuthorities().toString();
+        User user = userService.getUser(username);
+        String role = user.getRole().toString();
 
-        return new UserProfileResponse(username, role);
+        return user;
     }
 
     private User authenticate(String userName, String password) {

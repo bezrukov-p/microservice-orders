@@ -3,10 +3,12 @@ package com.bezrukov.microserviceorders.controller;
 import com.bezrukov.microserviceorders.dto.AuthRequest;
 import com.bezrukov.microserviceorders.dto.RefreshTokenRequest;
 import com.bezrukov.microserviceorders.dto.RegisterRequest;
+import com.bezrukov.microserviceorders.dto.UserProfileResponse;
+import com.bezrukov.microserviceorders.entity.User;
 import com.bezrukov.microserviceorders.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,8 +36,10 @@ public class AuthController {
         return ResponseEntity.ok(authService.refreshToken(refreshTokenRequest.refreshToken()));
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/me")
     public ResponseEntity<?> me() {
-        return ResponseEntity.ok(authService.getCurrentUser());
+        User user = authService.getCurrentUser();
+        return ResponseEntity.ok(new UserProfileResponse(user.getUsername(), user.getRole().name()));
     }
 }
