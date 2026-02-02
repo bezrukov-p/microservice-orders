@@ -2,6 +2,8 @@ package com.bezrukov.microserviceorders.service;
 
 import com.bezrukov.microserviceorders.entity.Role;
 import com.bezrukov.microserviceorders.entity.User;
+import com.bezrukov.microserviceorders.exception.UserAlreadyExistsException;
+import com.bezrukov.microserviceorders.exception.UserNotFoundException;
 import com.bezrukov.microserviceorders.repository.OrderRepository;
 import com.bezrukov.microserviceorders.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class UserService {
 
     public User create(String username, String password) {
         if (userRepository.existsByUsername(username)) {
-            throw new RuntimeException("Пользователь с таким именем уже существует");
+            throw new UserAlreadyExistsException(username);
         }
 
         return userRepository.save(User.builder()
@@ -44,6 +46,10 @@ public class UserService {
     }
 
     public void deleteUser(UUID id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+
         userRepository.deleteById(id);
     }
 

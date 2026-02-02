@@ -22,6 +22,7 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
     private String description;
+    @Enumerated(EnumType.STRING)
     private Status status;
     private LocalDateTime createdAt;
 }

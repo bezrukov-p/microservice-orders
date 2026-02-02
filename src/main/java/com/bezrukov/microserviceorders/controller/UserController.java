@@ -2,19 +2,20 @@ package com.bezrukov.microserviceorders.controller;
 
 import com.bezrukov.microserviceorders.dto.UserDto;
 import com.bezrukov.microserviceorders.service.UserService;
+import com.bezrukov.microserviceorders.utils.MapperDto;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@RestController("/api/users")
+@RestController
+@RequestMapping("/api/users")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private final UserService userService;
 
@@ -27,7 +28,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers().stream().map(
-                user -> new UserDto(user.getId(), user.getUsername(), user.getRole().name())
+                MapperDto::userToDto
         ).collect(Collectors.toList()));
     }
 

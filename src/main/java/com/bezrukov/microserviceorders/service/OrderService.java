@@ -36,8 +36,12 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    public List<Order> getAllOrders(UUID userId) {
+    public List<Order> getOrders(UUID userId) {
         return orderRepository.getOrdersByUser_Id(userId);
+    }
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
     public Order setStatus(UUID orderId, Status status) {

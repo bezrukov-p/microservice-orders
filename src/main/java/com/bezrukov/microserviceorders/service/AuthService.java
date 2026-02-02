@@ -1,10 +1,13 @@
 package com.bezrukov.microserviceorders.service;
 
+import com.bezrukov.microserviceorders.dto.AuthRequest;
 import com.bezrukov.microserviceorders.dto.AuthResponse;
-import com.bezrukov.microserviceorders.dto.RegisterRequest;
-import com.bezrukov.microserviceorders.dto.UserProfileResponse;
+import com.bezrukov.microserviceorders.dto.UserDto;
 import com.bezrukov.microserviceorders.entity.RefreshToken;
 import com.bezrukov.microserviceorders.entity.User;
+import com.bezrukov.microserviceorders.exception.AuthenticationException;
+import com.bezrukov.microserviceorders.exception.InvalidRefreshTokenException;
+import com.bezrukov.microserviceorders.utils.MapperDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,8 +29,9 @@ public class AuthService {
         this.refreshTokenService = refreshTokenService;
     }
 
-    public User register(RegisterRequest registerRequest) {
-        return userService.create(registerRequest.username(), registerRequest.password());
+    public UserDto register(AuthRequest authRequest) {
+        User user = userService.create(authRequest.username(), authRequest.password());
+        return MapperDto.userToDto(user);
     }
 
     public AuthResponse login(String userName, String password) {
@@ -38,7 +42,7 @@ public class AuthService {
 
     public AuthResponse refreshToken(String refreshToken) {
         if (!refreshTokenService.validateRefreshToken(refreshToken)) {
-            throw new RuntimeException("Invalid refresh token");
+            throw new InvalidRefreshTokenException();
         }
 
         RefreshToken token =refreshTokenService.findByToken(refreshToken);
@@ -59,20 +63,18 @@ public class AuthService {
         }
 
         String username = authentication.getName();
-        User user = userService.getUser(username);
-        String role = user.getRole().toString();
 
-        return user;
+        return userService.getUser(username);
     }
 
     private User authenticate(String userName, String password) {
         User user = userService.getUser(userName);
         if (user == null) {
-            throw new RuntimeException("Invalid credentials");
+            throw new AuthenticationException("Invalid username or password");
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new RuntimeException("Invalid username or password");
         }
 
         return user;
@@ -85,9 +87,8 @@ public class AuthService {
         return new AuthResponse(
                 accessToken,
                 refreshToken.getToken(),
-                user.getUsername(),
-                user.getRole(),
-                refreshToken.getExpiresAt()
+                refreshToken.getExpiresAt(),
+                new UserDto(user.getId(), user.getUsername(), user.getRole().name())
         );
     }
 }

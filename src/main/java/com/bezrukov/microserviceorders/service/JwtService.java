@@ -53,7 +53,7 @@ public class JwtService {
 
     @SuppressWarnings("unchecked")
     public List<String> extractRoles(String token) {
-        return extractAllClaims(token).get("roles", List.class);
+        return extractAllClaims(token).get("role", List.class);
     }
 
     public boolean isTokenValid(String token) {
