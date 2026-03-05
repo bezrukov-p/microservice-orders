@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: microservice-orders
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+jwt:
+  secret: "c2VjcmV0S2V5V2l0aEF0TGVhc3QyNTZCaXRzRm9ySFM1MTJBbGdvcml0aG0="
+  expiration: 900000  # 15 minutes
+  refreshExpiration: 2592000000  # 30 days
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: TRACE
