@@ -15,14 +15,12 @@ import java.util.List;
 public class ErrorResponse {
 
     @Schema(
-            description = "HTTP статус код ошибки",
-            example = "404"
+            description = "HTTP статус код ошибки"
     )
     private int status;
 
     @Schema(
-            description = "Сообщение об ошибке",
-            example = "User not found"
+            description = "Сообщение об ошибке"
     )
     private String message;
 
@@ -42,14 +40,12 @@ public class ErrorResponse {
 
     @Schema(
             description = "Список детальных ошибок (для множественных ошибок валидации)",
-            example = "[\"Field 'username' must not be blank\", \"Field 'email' must be a valid email address\"]",
             nullable = true
     )
     private List<String> errors;
 
     @Schema(
             description = "Код ошибки для программной обработки",
-            example = "USER_NOT_FOUND",
             allowableValues = {
                     "USER_NOT_FOUND",
                     "ORDER_NOT_FOUND",
@@ -66,7 +62,6 @@ public class ErrorResponse {
 
     @Schema(
             description = "Тип ошибки для классификации",
-            example = "ResourceNotFound",
             nullable = true,
             hidden = true
     )
