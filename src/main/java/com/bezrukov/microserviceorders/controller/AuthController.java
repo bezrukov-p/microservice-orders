@@ -3,9 +3,10 @@ package com.bezrukov.microserviceorders.controller;
 import com.bezrukov.microserviceorders.dto.*;
 import com.bezrukov.microserviceorders.entity.User;
 import com.bezrukov.microserviceorders.service.AuthService;
+import com.bezrukov.microserviceorders.service.impl.AuthServiceImpl;
 import com.bezrukov.microserviceorders.utils.MapperDto;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,18 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @SecurityRequirement(name = "bearerAuth")
-public class AuthController {
+@RequiredArgsConstructor
+public class AuthController implements AuthApi {
     private final AuthService authService;
-
-    @Autowired
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody AuthRequest registerRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                authService.register(registerRequest)
+                MapperDto.userToDto(authService.register(registerRequest))
         );
     }
 

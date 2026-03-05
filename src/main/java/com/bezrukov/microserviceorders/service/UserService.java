@@ -2,62 +2,18 @@ package com.bezrukov.microserviceorders.service;
 
 import com.bezrukov.microserviceorders.entity.Role;
 import com.bezrukov.microserviceorders.entity.User;
-import com.bezrukov.microserviceorders.exception.UserAlreadyExistsException;
-import com.bezrukov.microserviceorders.exception.UserNotFoundException;
-import com.bezrukov.microserviceorders.repository.OrderRepository;
-import com.bezrukov.microserviceorders.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
-@Service
-public class UserService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+public interface UserService {
+    User getUser(String username);
 
-    @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    User getUser(UUID id);
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+    List<User> getAllUsers();
 
-    public User create(String username, String password) {
-        if (userRepository.existsByUsername(username)) {
-            throw new UserAlreadyExistsException(username);
-        }
+    User create(String username, String password, Role role);
 
-        return userRepository.save(User.builder()
-                .username(username)
-                .password(passwordEncoder.encode(password))
-                .role(Role.ROLE_USER)
-                .build()
-        );
-    }
-
-    public void save(User user) {
-        userRepository.save(user);
-    }
-
-    public void deleteUser(UUID id) {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException(id);
-        }
-
-        userRepository.deleteById(id);
-    }
-
-    public User getUser(UUID id) {
-        return userRepository.getUserById(id);
-    }
-
-    public User getUser(String username) {
-        return userRepository.getUserByUsername(username);
-    }
+    User delete(UUID id);
 }

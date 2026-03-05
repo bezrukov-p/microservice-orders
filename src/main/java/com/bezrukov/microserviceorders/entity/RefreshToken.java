@@ -16,7 +16,6 @@ import java.util.UUID;
 @Table(name = "refresh_tokens")
 public class RefreshToken {
 
-    // Геттеры и сеттеры
     @Id
     @Column(name = "token")
     private String token;

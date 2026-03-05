@@ -1,8 +1,7 @@
-package com.bezrukov.microserviceorders.controller;
+package com.bezrukov.microserviceorders.exception;
 
 import com.bezrukov.microserviceorders.dto.ErrorResponse;
 import com.bezrukov.microserviceorders.dto.ValidationErrorResponse;
-import com.bezrukov.microserviceorders.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -146,18 +145,6 @@ public class GlobalExceptionHandler {
                 .message("Validation failed")
                 .timestamp(LocalDateTime.now())
                 .fieldErrors(errors)
-                .build();
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleAccessDeniedSpring(AccessDeniedException ex, HttpServletRequest request) {
-        log.warn("Spring Security access denied: {}", ex.getMessage());
-        return ErrorResponse.builder()
-                .status(HttpStatus.FORBIDDEN.value())
-                .message("You don't have permission to access this resource")
-                .timestamp(LocalDateTime.now())
-                .path(request.getRequestURI())
                 .build();
     }
 

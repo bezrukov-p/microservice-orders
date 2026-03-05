@@ -3,54 +3,20 @@ package com.bezrukov.microserviceorders.service;
 import com.bezrukov.microserviceorders.entity.Order;
 import com.bezrukov.microserviceorders.entity.Status;
 import com.bezrukov.microserviceorders.entity.User;
-import com.bezrukov.microserviceorders.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Service
-public class OrderService {
-    private final OrderRepository orderRepository;
+public interface OrderService {
+    Order createOrder(String description, Status status, User user);
 
-    @Autowired
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
+    Order deleteOrder(UUID id);
 
-    public Order createOrder(String description, Status status, User user) {
-        Order order = Order.builder()
-                .id(UUID.randomUUID())
-                .status(status)
-                .description(description)
-                .createdAt(LocalDateTime.now())
-                .user(user)
-                .build();
+    List<Order> getOrders(UUID userId);
 
-        return orderRepository.save(order);
-    }
+    List<Order> getAllOrders();
 
-    public void deleteOrder(UUID id) {
-        orderRepository.deleteById(id);
-    }
+    Order setStatus(UUID orderId, Status status);
 
-    public List<Order> getOrders(UUID userId) {
-        return orderRepository.getOrdersByUser_Id(userId);
-    }
-
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    }
-
-    public Order setStatus(UUID orderId, Status status) {
-        Order order = orderRepository.getReferenceById(orderId);
-        order.setStatus(status);
-        return orderRepository.save(order);
-    }
-
-    public Order getOrderById(UUID id) {
-        return orderRepository.getReferenceById(id);
-    }
+    Order getOrderById(UUID id);
 }

@@ -1,29 +1,74 @@
 package com.bezrukov.microserviceorders.dto;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "Базовый ответ с ошибкой")
 public class ErrorResponse {
+
+    @Schema(
+            description = "HTTP статус код ошибки",
+            example = "404"
+    )
     private int status;
+
+    @Schema(
+            description = "Сообщение об ошибке",
+            example = "User not found"
+    )
     private String message;
+
+    @Schema(
+            description = "Время возникновения ошибки в формате ISO",
+            example = "2024-01-15T10:30:00.123",
+            pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    )
     private LocalDateTime timestamp;
+
+    @Schema(
+            description = "URL пути запроса, на котором возникла ошибка",
+            example = "/api/users",
+            required = true
+    )
     private String path;
+
+    @Schema(
+            description = "Список детальных ошибок (для множественных ошибок валидации)",
+            example = "[\"Field 'username' must not be blank\", \"Field 'email' must be a valid email address\"]",
+            nullable = true
+    )
     private List<String> errors;
+
+    @Schema(
+            description = "Код ошибки для программной обработки",
+            example = "USER_NOT_FOUND",
+            allowableValues = {
+                    "USER_NOT_FOUND",
+                    "ORDER_NOT_FOUND",
+                    "USER_ALREADY_EXISTS",
+                    "INVALID_REFRESH_TOKEN",
+                    "INVALID_STATUS",
+                    "ACCESS_DENIED",
+                    "AUTHENTICATION_FAILED",
+                    "VALIDATION_FAILED"
+            },
+            nullable = true
+    )
     private String errorCode;
 
-    public ErrorResponse(int status, String message, String path) {
-        this.status = status;
-        this.message = message;
-        this.path = path;
-        this.timestamp = LocalDateTime.now();
-    }
+    @Schema(
+            description = "Тип ошибки для классификации",
+            example = "ResourceNotFound",
+            nullable = true,
+            hidden = true
+    )
+    private String errorType;
 }

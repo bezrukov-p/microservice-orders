@@ -11,6 +11,6 @@ public class MapperDto {
     }
 
     public static OrderDto orderToDto(Order order) {
-        return new OrderDto(order.getDescription(), order.getStatus(), order.getCreatedAt(), userToDto(order.getUser()));
+        return new OrderDto(order.getId(), order.getDescription(), order.getStatus(), order.getCreatedAt(), userToDto(order.getUser()));
     }
 }

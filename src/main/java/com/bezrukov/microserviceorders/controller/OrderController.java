@@ -3,7 +3,6 @@ package com.bezrukov.microserviceorders.controller;
 import com.bezrukov.microserviceorders.dto.CreateOrderRequest;
 import com.bezrukov.microserviceorders.dto.OrderDto;
 import com.bezrukov.microserviceorders.dto.UpdateOrderRequest;
-import com.bezrukov.microserviceorders.dto.UserDto;
 import com.bezrukov.microserviceorders.entity.Order;
 import com.bezrukov.microserviceorders.entity.Role;
 import com.bezrukov.microserviceorders.entity.Status;
@@ -13,7 +12,7 @@ import com.bezrukov.microserviceorders.service.AuthService;
 import com.bezrukov.microserviceorders.service.OrderService;
 import com.bezrukov.microserviceorders.utils.MapperDto;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +23,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/orders")
 @SecurityRequirement(name = "bearerAuth")
-public class OrderController {
+@RequiredArgsConstructor
+public class OrderController implements OrderApi {
     private final OrderService orderService;
     private final AuthService authService;
-
-    @Autowired
-    public OrderController(OrderService orderService, AuthService authService) {
-        this.orderService = orderService;
-        this.authService = authService;
-    }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
@@ -68,18 +62,18 @@ public class OrderController {
         return ResponseEntity.ok(MapperDto.orderToDto(order));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{orderId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
+    public ResponseEntity<OrderDto> deleteOrder(@PathVariable UUID orderId) {
         User user = authService.getCurrentUser();
         if (Role.ROLE_USER.equals(user.getRole())) {
-            Order order = orderService.getOrderById(id);
+            Order order = orderService.getOrderById(orderId);
             if (!order.getUser().getId().equals(user.getId())) {
                 throw new AccessDeniedException("You do not have permission to delete this order");
             }
         }
 
-        orderService.deleteOrder(id);
-        return ResponseEntity.ok().build();
+        Order order = orderService.deleteOrder(orderId);
+        return ResponseEntity.ok(MapperDto.orderToDto(order));
     }
 }
