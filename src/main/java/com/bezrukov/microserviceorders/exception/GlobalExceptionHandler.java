@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -145,27 +144,6 @@ public class GlobalExceptionHandler {
                 .message("Validation failed")
                 .timestamp(LocalDateTime.now())
                 .fieldErrors(errors)
-                .build();
-    }
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleAllUncaughtException(
-            Exception ex,
-            HttpServletRequest request) {
-
-        log.error("Unhandled exception: ", ex);
-
-        String message = "An unexpected error occurred";
-        if (Arrays.asList("dev", "local").contains(System.getProperty("spring.profiles.active"))) {
-            message = ex.getMessage();
-        }
-
-        return ErrorResponse.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(message)
-                .timestamp(LocalDateTime.now())
-                .path(request.getRequestURI())
                 .build();
     }
 }

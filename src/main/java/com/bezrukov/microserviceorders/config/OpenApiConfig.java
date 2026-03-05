@@ -20,6 +20,6 @@ public class OpenApiConfig {
                                         .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
                                         .bearerFormat("JWT")
-                                        .description("Введите JWT токен в формате: Bearer {token}")));
+                                        .description("Введите JWT токен в формате: {token}")));
     }
 }
