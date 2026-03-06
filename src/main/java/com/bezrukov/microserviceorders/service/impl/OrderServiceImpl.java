@@ -18,6 +18,7 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
+    @Override
     public Order createOrder(String description, Status status, User user) {
         Order order = Order.builder()
                 .id(UUID.randomUUID())
@@ -30,26 +31,31 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
+    @Override
     public Order deleteOrder(UUID id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         orderRepository.delete(order);
         return order;
     }
 
+    @Override
     public List<Order> getOrders(UUID userId) {
         return orderRepository.getOrdersByUser_Id(userId);
     }
 
+    @Override
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
+    @Override
     public Order setStatus(UUID orderId, Status status) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
         order.setStatus(status);
         return orderRepository.save(order);
     }
 
+    @Override
     public Order getOrderById(UUID id) {
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
     }

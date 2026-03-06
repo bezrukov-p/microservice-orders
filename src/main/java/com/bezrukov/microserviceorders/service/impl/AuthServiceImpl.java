@@ -26,16 +26,19 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
+    @Override
     public User register(AuthRequest authRequest) {
         return userService.create(authRequest.username(), authRequest.password(), Role.ROLE_USER);
     }
 
+    @Override
     public AuthResponse login(String userName, String password) {
         User user = authenticate(userName, password);
 
         return generateAuthResponse(user);
     }
 
+    @Override
     public AuthResponse refreshToken(String refreshToken) {
         if (!refreshTokenService.validateRefreshToken(refreshToken)) {
             throw new InvalidRefreshTokenException();
@@ -49,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
         return generateAuthResponse(user);
     }
 
+    @Override
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {

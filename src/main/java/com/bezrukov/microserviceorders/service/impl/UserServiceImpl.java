@@ -19,10 +19,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public User create(String username, String password, Role role) {
         if (userRepository.existsByUsername(username)) {
             throw new UserAlreadyExistsException(username);
@@ -36,12 +38,14 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    @Override
     public User delete(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         userRepository.delete(user);
         return user;
     }
 
+    @Override
     public User getUser(String username) {
         User user = userRepository.getUserByUsername(username);
         if (user == null) {

@@ -15,7 +15,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +37,7 @@ public class OrderController implements OrderApi {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Override
     public ResponseEntity<OrderDto> createOrder(@RequestBody CreateOrderRequest createOrderRequest) {
         User user = authService.getCurrentUser();
         Order order = orderService.createOrder(createOrderRequest.description(), Status.CREATED, user);
@@ -39,6 +47,7 @@ public class OrderController implements OrderApi {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public ResponseEntity<List<OrderDto>> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
 
@@ -47,6 +56,7 @@ public class OrderController implements OrderApi {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Override
     public ResponseEntity<List<OrderDto>> getOrders() {
         User user = authService.getCurrentUser();
         List<Order> orders = orderService.getOrders(user.getId());
@@ -56,6 +66,7 @@ public class OrderController implements OrderApi {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public ResponseEntity<OrderDto> updateOrder(@PathVariable UUID id, @RequestBody UpdateOrderRequest updateOrderRequest) {
         Order order = orderService.setStatus(id, Status.valueOf(updateOrderRequest.status()));
 
@@ -64,6 +75,7 @@ public class OrderController implements OrderApi {
 
     @DeleteMapping("/{orderId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Override
     public ResponseEntity<OrderDto> deleteOrder(@PathVariable UUID orderId) {
         User user = authService.getCurrentUser();
         if (Role.ROLE_USER.equals(user.getRole())) {
