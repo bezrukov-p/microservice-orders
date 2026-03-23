@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * API для управления заказами
+ */
 @Tag(name = "Заказы", description = "API для управления заказами")
 @SecurityRequirement(name = "bearerAuth")
 public interface OrderApi {

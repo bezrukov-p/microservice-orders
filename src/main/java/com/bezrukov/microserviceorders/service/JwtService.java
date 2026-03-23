@@ -15,6 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Сервис для работы с JWT токенами.
+ * <p>
+ * Генерирует и валидирует JWT access токены.
+ * </p>
+ */
 @Service
 public class JwtService {
 
@@ -28,6 +34,12 @@ public class JwtService {
         this.expiration = expiration;
     }
 
+    /**
+     * Генерирует JWT токен для пользователя.
+     *
+     * @param user пользователь
+     * @return JWT токен
+     */
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getAuthorities().stream()
@@ -60,6 +72,13 @@ public class JwtService {
         return isTokenValid(token, null);
     }
 
+    /**
+     * Проверяет валидность токена и соответствие имени пользователя.
+     *
+     * @param token    JWT токен
+     * @param username имя пользователя для проверки
+     * @return true если токен валиден и имя пользователя совпадает
+     */
     public boolean isTokenValid(String token, String username) {
         try {
             String extractedUsername = extractUsername(token);

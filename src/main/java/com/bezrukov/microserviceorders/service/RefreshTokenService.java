@@ -10,6 +10,13 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Сервис для работы с refresh токенами.
+ * <p>
+ * Управляет хранением и валидацией refresh токенов.
+ * Каждый пользователь может иметь только один активный refresh токен.
+ * </p>
+ */
 @Service
 public class RefreshTokenService {
 
@@ -23,6 +30,15 @@ public class RefreshTokenService {
         this.expirationMs = expirationMs;
     }
 
+    /**
+     * Создает новый refresh токен для пользователя.
+     * <p>
+     * Предыдущий токен пользователя удаляется (один активный токен на пользователя).
+     * </p>
+     *
+     * @param userId идентификатор пользователя
+     * @return созданный refresh токен
+     */
     @Transactional
     public RefreshToken createRefreshToken(UUID userId) {
         refreshTokenRepository.deleteByUserId(userId);
@@ -44,6 +60,12 @@ public class RefreshTokenService {
                 Long.toString(System.currentTimeMillis(), 36);
     }
 
+    /**
+     * Проверяет валидность refresh токена.
+     *
+     * @param token refresh токен
+     * @return true если токен валиден и не истек
+     */
     public boolean validateRefreshToken(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token);
         if (refreshToken == null) {
@@ -61,6 +83,11 @@ public class RefreshTokenService {
         return refreshTokenRepository.findByUserId(userId);
     }
 
+    /**
+     * Удаляет refresh токен пользователя.
+     *
+     * @param userId идентификатор пользователя
+     */
     @Transactional
     public void deleteByUserId(UUID userId) {
         refreshTokenRepository.deleteByUserId(userId);

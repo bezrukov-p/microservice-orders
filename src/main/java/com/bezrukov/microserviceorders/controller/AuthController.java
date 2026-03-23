@@ -12,19 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST контроллер для управления аутентификацией пользователей.
  * Предоставляет endpoints для регистрации, входа в систему, обновления токенов
  * и получения информации о текущем пользователе.
- *
- * @author Bezrukov
- * @version 1.0
  */
 @RestController
 @RequestMapping("/api/auth")
@@ -37,7 +30,6 @@ public class AuthController implements AuthApi {
      * Регистрирует нового пользователя в системе.
      *
      * @param registerRequest данные для регистрации (имя пользователя и пароль)
-     * @return ResponseEntity с данными созданного пользователя и статусом 201 (Created)
      */
     @PostMapping("/register")
     @Override
@@ -51,7 +43,6 @@ public class AuthController implements AuthApi {
      * Аутентифицирует пользователя и возвращает JWT токены.
      *
      * @param authRequest учетные данные пользователя (имя пользователя и пароль)
-     * @return ResponseEntity с access и refresh токенами
      */
     @PostMapping("/login")
     @Override
@@ -63,7 +54,7 @@ public class AuthController implements AuthApi {
      * Обновляет access токен с использованием refresh токена.
      *
      * @param refreshTokenRequest запрос, содержащий refresh токен
-     * @return ResponseEntity с новой парой токенов
+     * @return AuthResponse с новой парой токенов
      */
     @PostMapping("/refresh")
     @Override
@@ -73,8 +64,6 @@ public class AuthController implements AuthApi {
 
     /**
      * Получает информацию о текущем аутентифицированном пользователе.
-     *
-     * @return ResponseEntity с данными текущего пользователя
      */
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/me")

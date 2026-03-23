@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+/**
+ * API для регистрации, входа и управления токенами
+ */
 @Tag(name = "Аутентификация", description = "API для регистрации, входа и управления токенами")
 public interface AuthApi {
 
