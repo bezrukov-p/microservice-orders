@@ -7,12 +7,14 @@ import com.bezrukov.microserviceorders.exception.OrderNotFoundException;
 import com.bezrukov.microserviceorders.repository.OrderRepository;
 import com.bezrukov.microserviceorders.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -28,12 +30,18 @@ public class OrderServiceImpl implements OrderService {
                 .user(user)
                 .build();
 
+        log.info("Order created: {}", order);
+
         return orderRepository.save(order);
     }
 
     @Override
     public Order deleteOrder(UUID id) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+        Order order = orderRepository.findById(id).orElseThrow(() -> {
+            log.error("Order with id {} not found", id);
+            return new OrderNotFoundException(id);
+        });
+        log.info("Order deleted: {}", order);
         orderRepository.delete(order);
         return order;
     }
@@ -50,13 +58,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order setStatus(UUID orderId, Status status) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
+            log.error("Order with id {} not found", orderId);
+            return new OrderNotFoundException(orderId);
+        });
         order.setStatus(status);
+        log.info("Order {} status updated to {}", orderId, status);
         return orderRepository.save(order);
     }
 
     @Override
-    public Order getOrderById(UUID id) {
-        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+    public Order getOrderById(UUID orderId) {
+        return orderRepository.findById(orderId).orElseThrow(() -> {
+            log.error("Order with id {} not found", orderId);
+            return new OrderNotFoundException(orderId);
+        });
     }
 }

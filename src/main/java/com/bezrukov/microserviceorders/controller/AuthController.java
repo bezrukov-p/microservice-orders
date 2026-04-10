@@ -9,6 +9,7 @@ import com.bezrukov.microserviceorders.service.AuthService;
 import com.bezrukov.microserviceorders.utils.MapperDto;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * Предоставляет endpoints для регистрации, входа в систему, обновления токенов
  * и получения информации о текущем пользователе.
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @SecurityRequirement(name = "bearerAuth")
@@ -34,6 +36,7 @@ public class AuthController implements AuthApi {
     @PostMapping("/register")
     @Override
     public ResponseEntity<UserDto> register(@RequestBody AuthRequest registerRequest) {
+        log.info("Registering user: {}", registerRequest.username());
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 MapperDto.userToDto(authService.register(registerRequest))
         );

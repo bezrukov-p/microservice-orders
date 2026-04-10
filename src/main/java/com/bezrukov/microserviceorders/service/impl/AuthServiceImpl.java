@@ -13,11 +13,13 @@ import com.bezrukov.microserviceorders.service.JwtService;
 import com.bezrukov.microserviceorders.service.RefreshTokenService;
 import com.bezrukov.microserviceorders.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -28,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User register(AuthRequest authRequest) {
+        log.info("Registering new user {}", authRequest.username());
         return userService.create(authRequest.username(), authRequest.password(), Role.ROLE_USER);
     }
 
@@ -67,10 +70,12 @@ public class AuthServiceImpl implements AuthService {
     private User authenticate(String userName, String password) {
         User user = userService.getUser(userName);
         if (user == null) {
+            log.info("User {} not found", userName);
             throw new AuthenticationException("Invalid username or password");
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
+            log.info("Password does not match");
             throw new RuntimeException("Invalid username or password");
         }
 
