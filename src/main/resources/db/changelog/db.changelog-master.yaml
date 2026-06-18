@@ -1,1 +1,4 @@
-databaseChangeLog: []
+databaseChangeLog:
+  - includeAll:
+      path: db/migration/
+      relativeToChangelogFile: false

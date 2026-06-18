@@ -2,4 +2,37 @@ spring:
   application:
     name: microservice-orders
   liquibase:
+    enabled: true
     change-log: classpath:/db/changelog/db.changelog-master.yaml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/orders_db
+    username: admin
+    password: admin
+
+management:
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://grafana-lgtm:4318/v1/traces
+    logging:
+      export:
+        otlp:
+          endpoint: http://grafana-lgtm:4318/v1/logs
+  otlp:
+    metrics:
+      export:
+        url: http://grafana-lgtm:4318/v1/metrics
+  tracing:
+    sampling:
+      probability: 1.0
+
+logging:
+  level:
+    org.springframework.boot.actuator.autoconfigure.opentelemetry: DEBUG
+    org.springframework.boot.docker.compose: DEBUG
+
+jwt:
+  secret: "c2VjcmV0S2V5V2l0aEF0TGVhc3QyNTZCaXRzRm9ySFM1MTJBbGdvcml0aG0="
+  expiration: 900000  # 15 minutes
+  refreshExpiration: 2592000000  # 30 days
